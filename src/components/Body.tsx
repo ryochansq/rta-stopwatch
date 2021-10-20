@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useStopwatch } from "react-timer-hook";
 import Store from "electron-store";
 import { Diff } from "./Diff";
@@ -17,6 +17,7 @@ export const Body = (): JSX.Element => {
     useStopwatch({
       autoStart: false,
     });
+  const onPushKeyRef = useRef(null);
 
   useEffect(
     () =>
@@ -44,7 +45,8 @@ export const Body = (): JSX.Element => {
 
   const timerText = (() => formatTime(hours, minutes, seconds))();
 
-  const onPushKey = () => {
+  onPushKeyRef.current = () => {
+    if (currentIndex + 1 > chart.length) return;
     if (currentIndex === -1) {
       start();
       setCurrentIndex(0);
@@ -55,11 +57,19 @@ export const Body = (): JSX.Element => {
         i === currentIndex ? { ...step, lap: timerText } : { ...step }
       )
     );
-    if (currentIndex + 1 < chart.length) setCurrentIndex((prev) => prev + 1);
-    else pause();
+    if (currentIndex + 1 === chart.length) pause();
+    setCurrentIndex((prev) => prev + 1);
   };
 
+  useEffect(() => {
+    window.addEventListener("keydown", (event) => {
+      if (event.key === " ") onPushKeyRef.current();
+    });
+  }, []);
+
   const addStep = () => setChart([...chart, {}]);
+  const deleteStep = (index: number) =>
+    setChart((prev) => prev.filter((_, idx) => idx !== index));
 
   const handleReset = () => {
     const ok = window.confirm("Are you sure you want to RESET?");
@@ -95,6 +105,7 @@ export const Body = (): JSX.Element => {
               value={step.time}
               onChange={(e) => handleChangeTime(e.target.value, index)}
             />
+            <button onClick={() => deleteStep(index)}>Del</button>
           </div>
         ) : (
           <div
@@ -107,17 +118,17 @@ export const Body = (): JSX.Element => {
         )
       )}
       {isEditing && <button onClick={addStep}>Add</button>}
-      <div
-        style={{
-          textAlign: "center",
-          fontSize: 36,
-          color: isRunning ? "white" : "cyan",
-          margin: 16,
-        }}
-      >
-        <span>{timerText}</span>
-      </div>
-      {!isEditing && <button onClick={onPushKey}>Lap</button>}
+      {!isEditing && (
+        <div
+          style={{
+            textAlign: "center",
+            fontSize: 36,
+            color: isRunning ? "white" : "cyan",
+          }}
+        >
+          <span>{timerText}</span>
+        </div>
+      )}
       {!isRunning && (
         <button onClick={toggleIsEditing}>{textEditButton}</button>
       )}
