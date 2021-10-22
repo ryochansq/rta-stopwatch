@@ -60,6 +60,7 @@ export const Run: VFC<Props> = ({
   };
 
   const handleUpdate = () => {
+    if (currentIndex === -1) return;
     const ok = window.confirm("Are you sure you want to UPDATE RECORD?");
     if (!ok) return;
     setChart((prev) =>
