@@ -12,10 +12,6 @@
     "lint": "eslint --ext .ts,.tsx ."
   },
   "keywords": [],
-  "author": {
-    "name": "ryochansq",
-    "email": "nicestsnsq@gmail.com"
-  },
   "license": "MIT",
   "config": {
     "forge": {

@@ -1,4 +1,4 @@
-import React, { VFC, useState, useEffect, useRef } from "react";
+import React, { VFC, useEffect, useRef } from "react";
 import { StopwatchResult } from "react-timer-hook";
 import { Diff } from "./Diff";
 import { formatTime } from "../utils/time";
@@ -70,7 +70,16 @@ export const Run: VFC<Props> = ({
       {chart.map((step, index) => (
         <div
           key={index}
-          style={{ display: "flex", justifyContent: "space-between" }}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "1px 8px",
+            borderRadius: 8,
+            backgroundColor:
+              index === currentIndex
+                ? "rgba(255, 255, 255, 0.2)"
+                : "rgba(0,0,0,0)",
+          }}
         >
           <span>{step.title || "No Label"}</span>
           <Diff step={step} />

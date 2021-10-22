@@ -13,6 +13,7 @@ export const Body = (): JSX.Element => {
   const { isRunning } = stopwatch;
 
   const toggleIsEditing = () => setIsEditing((prev) => !prev);
+  const editButtonText = isEditing ? "Change Run Mode" : "Edit";
 
   return (
     <>
@@ -27,7 +28,9 @@ export const Body = (): JSX.Element => {
           setCurrentIndex={setCurrentIndex}
         />
       )}
-      {!isRunning && <button onClick={toggleIsEditing}>Change View</button>}
+      {!isRunning && (
+        <button onClick={toggleIsEditing}>{editButtonText}</button>
+      )}
     </>
   );
 };
