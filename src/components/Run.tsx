@@ -21,7 +21,7 @@ export const Run: VFC<Props> = ({
   const { seconds, minutes, hours, isRunning, start, pause, reset } = stopwatch;
   const onPushKeyRef = useRef(null);
 
-  const timerText = formatTime(hours, minutes, seconds, true);
+  const timerText = formatTime(hours, minutes, seconds, false);
 
   onPushKeyRef.current = () => {
     if (currentIndex + 1 > chart.length) return;
@@ -32,7 +32,9 @@ export const Run: VFC<Props> = ({
     }
     setChart((prev) =>
       prev.map((step, i) =>
-        i === currentIndex ? { ...step, lap: timerText } : { ...step }
+        i === currentIndex
+          ? { ...step, lap: formatTime(hours, minutes, seconds, true) }
+          : { ...step }
       )
     );
     if (currentIndex + 1 === chart.length) pause();

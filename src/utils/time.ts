@@ -21,8 +21,6 @@ export const formatTimeDate = (date: Date): string =>
   );
 
 export const formatTimeText = (timeText: string): string => {
-  console.info(timeText);
   const date = new Date(`01 Jan 1970 ${timeText} GMT`);
-  console.info(date);
   return formatTimeDate(date);
 };

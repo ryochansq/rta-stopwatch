@@ -13,7 +13,7 @@ export const Body = (): JSX.Element => {
   const { isRunning } = stopwatch;
 
   const toggleIsEditing = () => setIsEditing((prev) => !prev);
-  const editButtonText = isEditing ? "Change Run Mode" : "Edit";
+  const editButtonText = isEditing ? "Save" : "Edit";
 
   return (
     <>
