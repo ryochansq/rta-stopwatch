@@ -1,7 +1,7 @@
 export const textToChart = (text: string): Step[] => {
   const textList = text.split("\n");
   const stepList = textList.map((line) => {
-    const [title, time] = line.split(" ");
+    const [title, time] = line.split("\t");
     return { title, time };
   });
   return stepList;
@@ -9,7 +9,7 @@ export const textToChart = (text: string): Step[] => {
 
 export const chartToText = (chart: Step[]): string => {
   const text = chart.reduce((acc, step, index) => {
-    const currentLine = `${step.title} ${step.time}`;
+    const currentLine = `${step.title}\t${step.time}`;
     return index === 0 ? currentLine : `${acc}\n${currentLine}`;
   }, "");
   return text;
