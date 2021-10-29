@@ -1,5 +1,5 @@
-type Step = {
-  title?: string;
-  time?: string;
-  lap?: string;
+type Time = {
+  hours: number;
+  minutes: number;
+  seconds: number;
 };

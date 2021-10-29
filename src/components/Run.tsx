@@ -1,49 +1,44 @@
 import React, { VFC, useEffect, useRef } from "react";
 import { StopwatchResult } from "react-timer-hook";
+import { useDispatch } from "react-redux";
+import { useSelector } from "../store";
+import { increment, resetLap, updateAndReset } from "../store/timerSlice";
 import { Diff } from "./Diff";
-import { formatTime } from "../utils/time";
+import { timeToText } from "../utils/time";
+import { getBestRecord, getPossibleBest } from "../utils/chart";
 
 type Props = {
-  chart: Step[];
-  setChart: React.Dispatch<React.SetStateAction<Step[]>>;
   stopwatch: StopwatchResult;
-  currentIndex: number;
-  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export const Run: VFC<Props> = ({
-  chart,
-  setChart,
-  stopwatch,
-  currentIndex,
-  setCurrentIndex,
-}) => {
+export const Run: VFC<Props> = ({ stopwatch }) => {
+  const titles = useSelector((state) => state.timer.titles);
+  const records = useSelector((state) => state.timer.records);
+  const laps = useSelector((state) => state.timer.laps);
+  const currentIndex = useSelector((state) => state.timer.index);
+  const dispatch = useDispatch();
   const { seconds, minutes, hours, isRunning, start, pause, reset } = stopwatch;
-  const onPushKeyRef = useRef(null);
+  const incrementSegmentRef = useRef(null);
 
-  const timerText = formatTime(hours, minutes, seconds, false);
+  const currentTime = { hours, minutes, seconds };
+  const timerText = timeToText(currentTime);
+  const bestRecord = getBestRecord(records);
+  const possibleBest = getPossibleBest(records);
 
-  onPushKeyRef.current = () => {
-    if (currentIndex + 1 > chart.length) return;
-    if (currentIndex === -1) {
-      start();
-      setCurrentIndex(0);
-      return;
-    }
-    setChart((prev) =>
-      prev.map((step, i) =>
-        i === currentIndex
-          ? { ...step, lap: formatTime(hours, minutes, seconds, true) }
-          : { ...step }
-      )
-    );
-    if (currentIndex + 1 === chart.length) pause();
-    setCurrentIndex((prev) => prev + 1);
+  const columnStyle = (isCurrent: boolean) => ({
+    padding: "1px 3px",
+    backgroundColor: isCurrent ? "rgba(255, 255, 255, 0.2)" : "rgba(0,0,0,0)",
+  });
+
+  incrementSegmentRef.current = () => {
+    dispatch(increment(currentTime));
+    if (currentIndex === -1) start();
+    else if (currentIndex + 1 === titles.length) pause();
   };
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key === " ") onPushKeyRef.current();
+      if (event.key === " ") incrementSegmentRef.current();
     };
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
@@ -53,41 +48,61 @@ export const Run: VFC<Props> = ({
     const ok = window.confirm("Are you sure you want to RESET?");
     if (!ok) return;
     reset(undefined, false);
-    setCurrentIndex(-1);
-    setChart((prev) =>
-      prev.map((step) => ({ title: step.title, time: step.time }))
-    );
+    dispatch(resetLap());
   };
 
   const handleUpdate = () => {
     if (currentIndex === -1) return;
     const ok = window.confirm("Are you sure you want to UPDATE RECORD?");
     if (!ok) return;
-    setChart((prev) =>
-      prev.map((step) => ({ title: step.title, time: step.lap }))
-    );
+    reset(undefined, false);
+    dispatch(updateAndReset());
   };
 
   return (
     <>
-      {chart.map((step, index) => (
-        <div
-          key={index}
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            padding: "1px 8px",
-            borderRadius: 8,
-            backgroundColor:
-              index === currentIndex
-                ? "rgba(255, 255, 255, 0.2)"
-                : "rgba(0,0,0,0)",
-          }}
-        >
-          <span>{step.title || "No Label"}</span>
-          <Diff step={step} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ flex: 1, textAlign: "left" }}>
+          <div style={{ paddingLeft: 3 }}>Label</div>
+          {titles.map((title, index) => (
+            <div key={index} style={columnStyle(index === currentIndex)}>
+              <span>{title || "No Label"}</span>
+            </div>
+          ))}
         </div>
-      ))}
+        <div style={{ flex: 1, textAlign: "right" }}>
+          <div style={{ paddingRight: 3 }}>Best</div>
+          {bestRecord.map((time, index) => (
+            <div key={index} style={columnStyle(index === currentIndex)}>
+              {(() =>
+                index < currentIndex ? (
+                  <Diff key={index} prevTime={time} newTime={laps[index]} />
+                ) : (
+                  <span> {timeToText(time)} </span>
+                ))()}
+            </div>
+          ))}
+        </div>
+        <div style={{ flex: 1, textAlign: "right" }}>
+          <div style={{ paddingRight: 3 }}>Possible</div>
+          {possibleBest.map((time, index) => (
+            <div key={index} style={columnStyle(index === currentIndex)}>
+              {(() =>
+                index < currentIndex ? (
+                  <Diff key={index} prevTime={time} newTime={laps[index]} />
+                ) : (
+                  <span> {timeToText(time)} </span>
+                ))()}
+            </div>
+          ))}
+        </div>
+      </div>
       <div
         style={{
           textAlign: "center",
