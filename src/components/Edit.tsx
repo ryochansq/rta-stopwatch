@@ -1,8 +1,8 @@
-import React, { VFC, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "../store";
-import { setChart } from "../store/timerSlice";
-import { chartToText, textToChart } from "../utils/chart";
+import React, { VFC, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSelector } from '../store';
+import { setChart } from '../store/timerSlice';
+import { chartToText, textToChart } from '../utils/chart';
 
 export const Edit: VFC = () => {
   const titles = useSelector((state) => state.timer.titles);
@@ -13,18 +13,16 @@ export const Edit: VFC = () => {
 
   const handleSave = () => {
     const newChart = textToChart(text);
-    // TODO: textをchartにparse出来なかった時のエラー処理
-    dispatch(setChart(newChart));
+    // 全てのrecordの長さがtitlesの長さと一致しているかチェック
+    const ok = newChart.records.reduce((acc, record) => acc && record.length === newChart.titles.length, true);
+    if (ok) dispatch(setChart(newChart));
+    else alert('Text is invalid.');
   };
 
   return (
     <>
       <div>
-        <textarea
-          rows={20}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
+        <textarea rows={20} value={text} onChange={(e) => setText(e.target.value)} />
       </div>
       <div>
         <button onClick={handleSave}>Save</button>

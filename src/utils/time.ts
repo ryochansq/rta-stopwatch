@@ -1,7 +1,6 @@
-const pad2 = (n: number): string => n.toString().padStart(2, "0");
+const pad2 = (n: number): string => n.toString().padStart(2, '0');
 
-export const timeToSeconds = (time: Time): number =>
-  time.hours * 3600 + time.minutes * 60 + time.seconds;
+export const timeToSeconds = (time: Time): number => time.hours * 3600 + time.minutes * 60 + time.seconds;
 
 export const secondsToTime = (seconds: number): Time => {
   return {
@@ -20,7 +19,7 @@ export const addTime = (t1: Time, t2: Time): Time => {
 export const subTime = (t1: Time, t2: Time): [string, Time] => {
   const s1 = timeToSeconds(t1);
   const s2 = timeToSeconds(t2);
-  const sign = s1 - s2 < 0 ? "-" : "+";
+  const sign = s1 - s2 < 0 ? '-' : '+';
   const time = secondsToTime(Math.abs(s1 - s2));
   return [sign, time];
 };
@@ -44,11 +43,11 @@ export const secondsToText = (seconds: number): string => {
 };
 
 export const textToTime = (text: string): Time => {
-  const parsed = text.split(":").reverse();
+  const parsed = text.split(':').reverse();
   const converted = parsed.map((item) => parseInt(item));
   return {
-    hours: converted.length > 2 ? converted[2] : 0,
-    minutes: converted[1],
-    seconds: converted[0],
+    hours: converted[2] || 0,
+    minutes: converted[1] || 0,
+    seconds: converted[0] || 0,
   };
 };

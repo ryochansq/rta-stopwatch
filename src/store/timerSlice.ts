@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type State = {
   index: number;
@@ -9,7 +9,7 @@ type State = {
 
 const initialState: State = {
   index: -1,
-  titles: ["Step1", "Step2"],
+  titles: ['Step1', 'Step2'],
   records: [
     [
       { hours: 0, minutes: 0, seconds: 32 },
@@ -24,7 +24,7 @@ const initialState: State = {
 };
 
 const timerSlice = createSlice({
-  name: "timer",
+  name: 'timer',
   initialState,
   reducers: {
     increment(state: State, action: PayloadAction<Time>) {
@@ -36,10 +36,7 @@ const timerSlice = createSlice({
       state.index = -1;
       state.laps = [];
     },
-    setChart(
-      state: State,
-      action: PayloadAction<{ titles: string[]; records: Time[][] }>
-    ) {
+    setChart(state: State, action: PayloadAction<{ titles: string[]; records: Time[][] }>) {
       state.titles = action.payload.titles;
       state.records = action.payload.records;
     },
@@ -51,7 +48,6 @@ const timerSlice = createSlice({
   },
 });
 
-export const { increment, setChart, resetLap, updateAndReset } =
-  timerSlice.actions;
+export const { increment, setChart, resetLap, updateAndReset } = timerSlice.actions;
 
 export default timerSlice;
