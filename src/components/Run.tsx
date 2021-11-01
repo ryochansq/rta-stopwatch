@@ -80,7 +80,12 @@ export const Run: VFC<Props> = ({ stopwatch }) => {
           <div style={{ paddingRight: 3 }}>Best</div>
           {bestRecord.map((time, index) => (
             <div key={index} style={columnStyle(index === currentIndex)}>
-              {(() => (index < currentIndex ? <Diff key={index} prevTime={time} newTime={laps[index]} /> : <span> {timeToText(time)} </span>))()}
+              {(() =>
+                index < currentIndex ? (
+                  <Diff key={index} prevTime={time} newTime={laps[index]} />
+                ) : (
+                  <span> {timeToText(time)} </span>
+                ))()}
             </div>
           ))}
         </div>
@@ -88,7 +93,12 @@ export const Run: VFC<Props> = ({ stopwatch }) => {
           <div style={{ paddingRight: 3 }}>Possible</div>
           {possibleBest.map((time, index) => (
             <div key={index} style={columnStyle(index === currentIndex)}>
-              {(() => (index < currentIndex ? <Diff key={index} prevTime={time} newTime={laps[index]} /> : <span> {timeToText(time)} </span>))()}
+              {(() =>
+                index < currentIndex ? (
+                  <Diff key={index} prevTime={time} newTime={laps[index]} />
+                ) : (
+                  <span> {timeToText(time)} </span>
+                ))()}
             </div>
           ))}
         </div>

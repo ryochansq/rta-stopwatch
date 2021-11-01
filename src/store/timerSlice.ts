@@ -1,13 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { chartToText } from '../utils/chart';
-import { saveFile } from '../utils/file';
 
 type State = {
   index: number;
   titles: string[];
   records: Time[][];
   laps: Time[];
-  fileHandle?: FileSystemFileHandle;
 };
 
 const initialState: State = {
@@ -24,7 +22,6 @@ const initialState: State = {
     ],
   ],
   laps: [],
-  fileHandle: null,
 };
 
 const timerSlice = createSlice({
@@ -43,20 +40,15 @@ const timerSlice = createSlice({
     setChart(state: State, action: PayloadAction<{ titles: string[]; records: Time[][] }>) {
       state.titles = action.payload.titles;
       state.records = action.payload.records;
-      const text = chartToText(state.titles, state.records);
-      saveFile(text);
     },
     updateAndReset(state: State) {
       state.records.push(state.laps);
       state.index = -1;
       state.laps = [];
     },
-    setFileHandle(state: State, action: PayloadAction<FileSystemFileHandle>) {
-      state.fileHandle = action.payload;
-    },
   },
 });
 
-export const { increment, setChart, resetLap, updateAndReset, setFileHandle } = timerSlice.actions;
+export const { increment, setChart, resetLap, updateAndReset } = timerSlice.actions;
 
 export default timerSlice;
