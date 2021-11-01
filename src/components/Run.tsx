@@ -26,7 +26,7 @@ export const Run: VFC<Props> = ({ stopwatch }) => {
   const possibleBest = getPossibleBest(records);
 
   const columnStyle = (isCurrent: boolean) => ({
-    padding: '1px 3px',
+    padding: '1px 6px',
     backgroundColor: isCurrent ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0,0,0,0)',
   });
 
@@ -71,7 +71,10 @@ export const Run: VFC<Props> = ({ stopwatch }) => {
         <div style={{ flex: 1, textAlign: 'left' }}>
           <div style={{ paddingLeft: 3 }}>Label</div>
           {titles.map((title, index) => (
-            <div key={index} style={columnStyle(index === currentIndex)}>
+            <div
+              key={index}
+              style={{ ...columnStyle(index === currentIndex), borderRadius: '8px 0 0 8px' }}
+            >
               <span>{title || 'No Label'}</span>
             </div>
           ))}
@@ -92,7 +95,10 @@ export const Run: VFC<Props> = ({ stopwatch }) => {
         <div style={{ flex: 1, textAlign: 'right' }}>
           <div style={{ paddingRight: 3 }}>Possible</div>
           {possibleBest.map((time, index) => (
-            <div key={index} style={columnStyle(index === currentIndex)}>
+            <div
+              key={index}
+              style={{ ...columnStyle(index === currentIndex), borderRadius: '0 8px 8px 0' }}
+            >
               {(() =>
                 index < currentIndex ? (
                   <Diff key={index} prevTime={time} newTime={laps[index]} />
