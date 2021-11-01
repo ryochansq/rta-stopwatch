@@ -11,12 +11,13 @@ export const Edit: VFC = () => {
   const [text, setText] = useState(chartText);
   const dispatch = useDispatch();
 
-  const handleSave = () => {
+  const handleSave = (): boolean => {
     const newChart = textToChart(text);
     // 全てのrecordの長さがtitlesの長さと一致しているかチェック
     const ok = newChart.records.reduce((acc, record) => acc && record.length === newChart.titles.length, true);
     if (ok) dispatch(setChart(newChart));
     else alert('Text is invalid.');
+    return ok;
   };
 
   return (
